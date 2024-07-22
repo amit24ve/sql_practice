@@ -1,5 +1,5 @@
 <h1>SQL EXAMPLE AND SOLUTIONS</h1>
-<h3>first letter is upper case and after first letter is lower case
+<h4>first letter is upper case and after first letter is lower case
 
 select user_id, concat(
     Upper(substring(name,1,1)),
@@ -58,4 +58,4 @@ select user_id, concat(
     Lower(substring(name,2,length(name)))
 ) as name
 from Users
-order by user_id asc;</h3>
+order by user_id asc;</h4>
