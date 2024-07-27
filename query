@@ -155,3 +155,31 @@ then id
 when id%2=0 then id-1
 when id%2=1 then id+1
 end as id,student from Seat order by id asc
+
+
+
+
+
+Example 1:
+
+Input: 
+Insurance table:
++-----+----------+----------+-----+-----+
+| pid | tiv_2015 | tiv_2016 | lat | lon |
++-----+----------+----------+-----+-----+
+| 1   | 10       | 5        | 10  | 10  |
+| 2   | 20       | 20       | 20  | 20  |
+| 3   | 10       | 30       | 20  | 20  |
+| 4   | 10       | 40       | 40  | 40  |
++-----+----------+----------+-----+-----+
+Output: 
++----------+
+| tiv_2016 |
++----------+
+| 45.00    |
++----------+
+
+# Write your MySQL query statement below
+SELECT ROUND(SUM(TIV_2016),2) AS TIV_2016 FROM Insurance a
+WHERE EXISTS (SELECT * FROM Insurance WHERE PID <> a.PID AND TIV_2015 = a.TIV_2015)
+AND NOT EXISTS (SELECT * FROM Insurance WHERE PID <> a.PID AND (LAT,LON) = (a.LAT,a.LON));
