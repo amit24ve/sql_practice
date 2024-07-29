@@ -210,3 +210,56 @@ select e1.employee_id, e1.name, count(e2.employee_id) as reports_count,
      from employees e1 join employees e2 on e1.employee_id = e2.reports_to
 group by e1.employee_id, e1.name
 order by e1.employee_id
+
+
+
+
+Input: 
+Customer table:
++-------------+--------------+--------------+-------------+
+| customer_id | name         | visited_on   | amount      |
++-------------+--------------+--------------+-------------+
+| 1           | Jhon         | 2019-01-01   | 100         |
+| 2           | Daniel       | 2019-01-02   | 110         |
+| 3           | Jade         | 2019-01-03   | 120         |
+| 4           | Khaled       | 2019-01-04   | 130         |
+| 5           | Winston      | 2019-01-05   | 110         | 
+| 6           | Elvis        | 2019-01-06   | 140         | 
+| 7           | Anna         | 2019-01-07   | 150         |
+| 8           | Maria        | 2019-01-08   | 80          |
+| 9           | Jaze         | 2019-01-09   | 110         | 
+| 1           | Jhon         | 2019-01-10   | 130         | 
+| 3           | Jade         | 2019-01-10   | 150         | 
++-------------+--------------+--------------+-------------+
+Output: 
++--------------+--------------+----------------+
+| visited_on   | amount       | average_amount |
++--------------+--------------+----------------+
+| 2019-01-07   | 860          | 122.86         |
+| 2019-01-08   | 840          | 120            |
+| 2019-01-09   | 840          | 120            |
+| 2019-01-10   | 1000         | 142.86         |
++--------------+--------------+----------------+
+
+# Write your MySQL query statement below
+SELECT visited_on, 
+    (
+        SELECT SUM(amount) 
+        FROM Customer 
+        WHERE visited_on BETWEEN DATE_SUB(c.visited_on, INTERVAL 6 DAY) 
+        AND c.visited_on 
+    ) AS amount, ROUND(
+        (
+           SELECT SUM(amount)/7 
+            FROM Customer 
+            WHERE visited_on BETWEEN DATE_SUB(c.visited_on, INTERVAL 6 DAY) 
+            AND c.visited_on 
+        ), 2
+    ) AS average_amount
+FROM Customer c 
+WHERE visited_on >= (
+    SELECT DATE_ADD(MIN(visited_on), INTERVAL 6 DAY) 
+    FROM Customer 
+) 
+GROUP BY visited_on 
+ORDER BY visited_on;
